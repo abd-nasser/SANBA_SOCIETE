@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/base_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home_style.css' %}">
+    <title>
+    {% block title %}
+        
+    {% endblock title %}
+    </title>
+</head>
+<body>
+    <nav>
+        <a href="#">Accueil</a>
+        <a href="#">Services</a>
+        <a href="#">Produits</a>
+        <a href="#">Contact</a>
+    </nav>
+
+    <header>
+        <h1>Bienvenu sur SANBA SOCIETE METALURGIE </h1>
+    </header>
+
+    <main>
+        
+        {% block content %}
+            
+        {% endblock content %}
+            
+    </main>
+
+    <footer>
+<p>Copywriting 2025</p>
+    </footer>
+</body>
+</html>

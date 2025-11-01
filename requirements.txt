@@ -1,0 +1,7 @@
+django
+django-htmx
+Stripe
+requests
+python-dotenv
+pillow
+django-tailwind
