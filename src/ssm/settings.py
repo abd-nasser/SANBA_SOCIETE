@@ -48,6 +48,11 @@ INSTALLED_APPS = [
     'reputation_app',
     'order_app',
     
+    #conf django-tailwind
+    'tailwind',
+     'theme',
+    
+    
 ]
 
 MIDDLEWARE = [
@@ -149,3 +154,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "ssm/static/")]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "auth_app.Client"
+
+NPM_BIN_PATH = r'C:\Program Files\nodejs\npm.cmd'
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = ["127.0.0.1"]
