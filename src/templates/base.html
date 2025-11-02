@@ -23,7 +23,18 @@
     </nav>
 
     <header>
+        
+        
+        {% if user.is_authenticated %}
+        <p>Bienvenu <strong>{{ user.username|upper }}</strong></p>
+        <a href="{% url 'auth_app:logout'%}">Deconnxion</a>
+        <a href="#">Profile</a>
+        {% else %}
         <h1>Bienvenu sur SANBA SOCIETE METALURGIE </h1>
+        <a href="{% url 'auth_app:register'%}">S'inscrire</a>
+        <a href="{% url 'auth_app:login'%}">Se connecter</a>
+        {% endif %}
+            
     </header>
 
     <main>

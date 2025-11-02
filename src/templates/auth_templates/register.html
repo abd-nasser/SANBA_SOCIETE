@@ -1,0 +1,12 @@
+
+
+
+    <form method='post' action="{% url 'auth_app:register' %}">
+
+    {% csrf_token %}
+    {{form.as_p}}
+
+    <input type="submit" value="S'inscrire">
+    </form>
+
+    
