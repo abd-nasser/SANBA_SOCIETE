@@ -2,8 +2,8 @@ from django.db import models
 from auth_app.models import Client
 
 class Categories(models.Model):
-    name = models.CharField(max_length=100)
-    icone = models.CharField(max_length=50)
+    name = models.CharField(max_length=100, null=True)
+    icone = models.CharField(max_length=50, null=True)
     order = models.IntegerField(default=0)
     
     def __str__(self):
@@ -16,6 +16,7 @@ class Services(models.Model):
     ref = models.TextField(null=True, blank=True)
     descriptions = models.TextField(blank=True)
     categories = models.ForeignKey(Categories,
+                                   null=True,
                                    related_name="cat",
                                    on_delete=models.CASCADE)
     

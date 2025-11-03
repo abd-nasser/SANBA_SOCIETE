@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
+
+from .utils import send_mail_with_body_html
 from .form import ClientForm
 
 
@@ -10,6 +12,13 @@ def register_view(request):
         if form.is_valid():
             user=form.save()
             login(request, user)
+            email = form.cleaned_data.get("email")
+            send_mail_with_body_html(
+                subject="Inscription Reussi",
+                recipient_list=[email],
+                template="mail.html",
+                context={"username":form.cleaned_data.get("username")}
+            )
             return redirect("home_app:home")
             
         else:
