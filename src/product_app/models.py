@@ -8,7 +8,7 @@ class Categories(models.Model):
     
     def __str__(self):
         return self.name
-    
+
 
 class Products(models.Model):
     name = models.CharField(max_length=150)
@@ -23,3 +23,12 @@ class Products(models.Model):
     def __str__(self):
         return self.name
    
+   
+
+class Product_search_by_client(models.Model):
+    name = models.CharField(max_length=255)
+    date_recherche = models.DateTimeField(auto_now_add=True)
+    nb_resultats = models.IntegerField(default=0)  # Nombre de produits trouvés
+    
+    def __str__(self):
+        return f"{self.name} ({self.date_recherche})"
