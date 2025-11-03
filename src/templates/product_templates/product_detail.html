@@ -1,7 +1,6 @@
- {% extends 'base.html' %}
 
-{{product.name}}
-{{product.price}}
-{{product.stock}}
-{{product.description}}
-<img src="{%  product.image.url %}" alt="{{product.name}}">
+<p>{{ product_detail.name }}</p>
+<p>{{ product_detail.price }}</p>
+<p>{{ product_detail.stock }}</p>
+<p>{{ product_detail.description }}</p>
+<img src="{{product_detail.image.url}}"  width="150" alt="image">

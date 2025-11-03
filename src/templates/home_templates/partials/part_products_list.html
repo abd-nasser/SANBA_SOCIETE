@@ -1,0 +1,16 @@
+
+<h1>Nos produits</h1>
+<ul>
+    {% for product in all_products  %}
+
+    <li>
+        <h3>{{product.name}}</h3>
+        <p><em>{{product.price}}</em></p>
+        <p><b>{{product.stock}}</b></p>
+        <p><a href="{% url 'product_app:product-detail' product.id  %}">Description</a></p>
+
+    </li>
+    
+    {% endfor %}
+    
+</ul>

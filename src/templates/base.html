@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/base_style.css' %}">
     <link rel="stylesheet" href="{% static 'css/home_style.css' %}">
+    <script src="{% static 'js/htmx.min.js' %}"></script>
     {% tailwind_css %}
     <title>
     {% block title %}
@@ -18,7 +19,7 @@
     <nav>
         <a href="#">Accueil</a>
         <a href="#">Services</a>
-        <a href="#">Produits</a>
+        <a href="{% url 'product_app:products-list' %}">Produits</a>
         <a href="#">Contact</a>
     </nav>
 

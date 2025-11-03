@@ -9,13 +9,15 @@
 <h1>Nos services</h1>
    </section>
 
-   <section 
+
+<section
    class="section_produits"
-   hx-trigger='revelead'
-   hx-get="{% url 'product_app:products-list' %}"
+   hx-trigger='revealed'
+   hx-get="{% url 'home_app:home-products' %}"
    hx-swap="innerHTML">
-   <h1>Nos produits</h1>
-   <a href="{% url 'product_app:product-detail' product.pk %}">Description</a>
-   </section>
+>
+
+</section>
+ 
 {% endblock content %}
     
