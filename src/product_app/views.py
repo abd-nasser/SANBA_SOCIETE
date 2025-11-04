@@ -1,13 +1,28 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Products, Product_search_by_client, Categories
 from django.db.models import Q
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 def product_list(request):
     all_products =  Products.objects.all()
-    ctx = {"all_products":all_products}
+    
+    #pagination - 5 produitspar page
+    paginator = Paginator(all_products, 5)
+    page = request.GET.get("page", 1) #page actuelle 
+    
+    try:
+        products_by_page = paginator.page(page)
+    except EmptyPage:
+        products_by_page = paginator.page(paginator.num_pages)
+        
+    
+    ctx = {"products_by_page":products_by_page}
     return render(request, "product_templates/product_list.html", ctx)
 
 
+    
+    
     
 def product_search(request):
     query = request.GET.get("search", "").strip()

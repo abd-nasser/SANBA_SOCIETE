@@ -1,0 +1,14 @@
+<h1>panier: {{ panier.status }}</h1>
+<ul>
+{% for article  in articles  %}
+<li>
+<h3>article dans le panier: {{ article.product }}</h3>
+    <h3>quantité: {{ article.quantite }}</h3>
+</li>
+    
+{% endfor %}
+</ul>
+
+    
+
+<h1>total : {{ total }}</h1>

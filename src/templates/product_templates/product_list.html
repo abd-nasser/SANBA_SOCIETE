@@ -2,12 +2,14 @@
 type="search" 
 name="search" 
 hx-get="{% url 'product_app:search' %}"
-id="">
+hx-trigger="keyup changed delay:500ms"
+hx-target="#prod_li"
+>
 
 <ul>
-    {% for product in all_products  %}
+    {% for product in products_by_page %}
 
-    <li>
+    <li id="prod_li">
         <h3>{{product.name}}</h3>
         <em>{{product.price}}</em>
         <b>{{product.stock}}</b>
@@ -18,3 +20,19 @@ id="">
     {% endfor %}
     
 </ul>
+
+<div>
+ {% if products_by_page.has_previous %}
+    <a href="?page={{products_by_page.previous_page_number}}">arrière_page</a>
+    {% endif %}
+    <span> {{ poducts_by_page.number}}</span>  
+    
+    
+    {% if products_by_page.has_next %}
+        <a href="?page={{ products_by_page.next_page_number}}">next_page</a>
+    {% endif %}
+         
+</div>
+    
+   
+    

@@ -4,3 +4,5 @@
 <p>{{ product_detail.stock }}</p>
 <p>{{ product_detail.description }}</p>
 <img src="{{product_detail.image.url}}"  width="150" alt="image">
+
+<a href="{% url 'order_app:ajouter-au-panier' product_detail.id %}">Ajouter au panier</a>
