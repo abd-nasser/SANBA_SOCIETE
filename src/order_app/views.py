@@ -90,3 +90,62 @@ def supprimer_article(request, article_id ):
     article.delete()
     messages.success(request, f"L'article{article.product.name} été supprimé de votre panier" ) 
     return redirect("order_app:voir-panier")
+
+
+
+
+def valide_commande(request):
+    
+    """
+    TRANSFORME LE PANIER EN COMMANDE
+    
+    """
+    #récupère panier actif du client
+    panier = get_object_or_404(Panier, client=request.user, status="actif")
+    
+    #verifie si panier n'est pas vide
+    if not panier.articlepanier_set.exists():
+        messages.error(request, "votre panier est vide")
+        return redirect("order_app:voir-panier")
+    
+    else:
+        #verifie les stoks pour tous les articles
+        for article in panier.articlepanier_set.all():
+            if article.quantite > article.product.stock:
+                messages.error(request, f"stock insuffisant pour {article.product.name}")
+            return redirect("order_app:voir-panier")
+
+        #crée la commande 
+        commande = Commande.objects.create(panier_id=panier.pk)
+        
+        #mise à jour des stocks
+        for article in panier.articlepanier_set.all():
+            article.product.stock -= article.quantite
+            article.product.save()
+        
+        #change le statu du panier
+        panier.status = "validé"
+        panier.save()  
+        messages.success(request,"Commande validée avec succès !")
+        
+        return redirect('order_app:detail-commande', commande_id=commande.pk)
+    
+    
+def detail_commande(request, commande_id):
+    """
+    AFFICHE LES DETAILS DE LA COMMANDE
+    
+    """
+    panier = get_object_or_404(Panier, client=request.user, status="validé")
+    commande = get_object_or_404(Commande, pk=commande_id, panier_id=panier.pk)
+    ctx = {"commande_detail": commande}
+    return render (request,"order_templates/detail_commande.html", ctx)
+
+
+def historique_commandes(request):
+    """
+    AFFICHE L'HISTORIQUE DES COMMANDES DU USER
+    """
+    commandes = Commande.objects.filter(panier__client=request.user).order_by("-date_commande")
+    ctx = {'historique_commande':commandes}
+    return render(request, "order_templates/historique_commande.html", ctx)
