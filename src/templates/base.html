@@ -30,7 +30,7 @@
         <p>Bienvenu <strong>{{ user.username|upper }}</strong></p>
         <a href="{% url 'auth_app:logout'%}">Deconnxion</a>
         <a href="#">Profile</a>
-        <a href="{% url 'order_app:voir-panier' %}">Mon Panier 🛒</a>
+        <a href="{% url 'order_app:voir-panier' %}">Mon Panier 🛒<span>{{num_articlepanier}}</span></a>
         {% else %}
         <h1>Bienvenu sur SANBA SOCIETE METALURGIE </h1>
         <a href="{% url 'auth_app:register'%}">S'inscrire</a>

@@ -4,11 +4,12 @@
 <li>
 <h3>article dans le panier: {{ article.product }}</h3>
     <h3>quantité: {{ article.quantite }}</h3>
+     <a href="{% url 'order_app:modifier-article' article.id %}   ">modifer la quantité</a>
 </li>
-    
+   
 {% endfor %}
 </ul>
 
-    
-
 <h1>total : {{ total }}</h1>
+
+

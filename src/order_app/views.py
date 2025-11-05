@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from product_app.models import Products
 from django.contrib import messages
 from.models import Panier, ArticlePanier, Commande
-
+from .form import AticlePanierForm
 
 @login_required
 def ajouter_au_panier(request, products_id):
@@ -35,7 +35,8 @@ def ajouter_au_panier(request, products_id):
         return redirect('product_app:products-list')
     else:
         #redirige vers la page précedente ou la liste des produits
-        return redirect(request,'product_app:products-list')
+        return redirect('product_app:products-list')
+    
         
 @login_required
 def voir_panier(request):
@@ -59,5 +60,30 @@ def voir_panier(request):
     }
     return render(request, 'order_templates/panier.html', ctx)
 
-
+@login_required
+def modifier_panier(request, article_id):
+    panier = get_object_or_404(Panier, client=request.user)
+    article = get_object_or_404(ArticlePanier, id=article_id, Panier_id=panier.pk)
+    if request.method =="POST":
+        form = AticlePanierForm(request.POST)
+        if form.is_valid():
+            new_quantite = form.cleaned_data.get("quantite")
+            if  new_quantite > 0:
+                article.quantite = new_quantite
+                print("quantité changer")
+                article.save() 
+                messages.success(request, f"Quantité article {article.product.name} modifiée!")
+                return redirect("order_app:voir-panier") 
+            else:
+                # suppression d'article if quantité inf = 0
+                article.delete()
+                message = messages.success(request, f"Article {article.product.name} supprimé du panier")
+                return redirect("order_app:voir-panier") 
+    return render(request, "order_templates/partials/modifier_article.html", {"form":AticlePanierForm(),
+                                                                              'article':article}
+                  )           
+                
+            
         
+        
+            
