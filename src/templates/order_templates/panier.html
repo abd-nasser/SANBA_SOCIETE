@@ -2,9 +2,10 @@
 <ul>
 {% for article  in articles  %}
 <li>
-<h3>article dans le panier: {{ article.product }}</h3>
+<h3>article : {{ article.product }}</h3>
     <h3>quantité: {{ article.quantite }}</h3>
-     <a href="{% url 'order_app:modifier-article' article.id %}   ">modifer la quantité</a>
+     <a href="{% url 'order_app:modifier-article' article.id %} ">modifer la quantité</a>
+     <a href="{% url 'order_app:supprimer-article' article.id %}">Supprimer l'article</a>
 </li>
    
 {% endfor %}

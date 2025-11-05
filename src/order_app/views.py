@@ -84,6 +84,9 @@ def modifier_panier(request, article_id):
                   )           
                 
             
-        
-        
-            
+def supprimer_article(request, article_id ):
+    panier = get_object_or_404(Panier, client=request.user)  
+    article = get_object_or_404(ArticlePanier, id=article_id, Panier_id=panier.pk)
+    article.delete()
+    messages.success(request, f"L'article{article.product.name} été supprimé de votre panier" ) 
+    return redirect("order_app:voir-panier")

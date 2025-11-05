@@ -5,10 +5,15 @@ from order_app.models import ArticlePanier, Panier
 
 
 def home_view(request):
-    panier = Panier.objects.get(client=request.user, status="actif")
-    articles_in_panier = panier.articlepanier_set.all()
-    ctx = {"num_articlepanier":len(articles_in_panier)}
-    return render(request, "home_templates/home.html",ctx)
+           
+    if request.user.is_authenticated:
+            panier, created = Panier.objects.get_or_create(client=request.user, status="actif")
+            articles_in_panier = panier.articlepanier_set.all()
+            ctx = {"num_articlepanier":len(articles_in_panier)}
+            return render(request, "home_templates/home.html",ctx)
+    else:
+        return render(request, "home_templates/home.html")
+        
 
     
 

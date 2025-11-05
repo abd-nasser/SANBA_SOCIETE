@@ -1,5 +1,5 @@
 <form method="post" action="{% url 'order_app:modifier-article' article.id %}">
 {% csrf_token %}
-{{form.as_p}}
+{{form.quantite}}
 <input type="submit" value="modifer">
 </form>
