@@ -25,4 +25,18 @@
 
 <h3>Total de la commande : {{ panier.total_panier }} €</h3>
 
+{% if commande_is_valide %}
+
+<a href="{% url 'payement_app:choix-paiement' commande_detail.id %}"> choix du paiements</a>
 <a href="{% url 'order_app:voir-panier' %}">← Retour au panier</a>
+
+{% else %}
+<a href="{% url 'order_app:valide-commande' %}">Validée votre commande pour passer au payement</a>
+
+<br>
+<a href="{% url 'order_app:voir-panier' %}">← Retour au panier</a>
+{% endif %}
+    
+
+
+

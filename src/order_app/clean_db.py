@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from .models import Panier, Commande, ArticlePanier
+from order_app.models import Panier, Commande, ArticlePanier
 
 class Commande(BaseCommand):
     help = 'Nettoie complètement la base arder_app'

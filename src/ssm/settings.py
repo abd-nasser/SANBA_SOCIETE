@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     'payement_app',
     'reputation_app',
     'order_app',
-    
     #conf django-tailwind
     'tailwind',
      'theme',

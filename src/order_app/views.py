@@ -4,7 +4,7 @@ from product_app.models import Products
 from django.contrib import messages
 from.models import Panier, ArticlePanier, Commande
 from .form import AticlePanierForm
-from django.db.models import Q
+from django.db.models import Q, F
 
 @login_required
 def ajouter_au_panier(request, products_id):
@@ -21,13 +21,24 @@ def ajouter_au_panier(request, products_id):
         
     )
     
-     # RÉACTIVE la commande Zombie si elle existe
+    
+        # RÉACTIVE la commande Zombie si elle existe
+    
     try:
         commande_zombie = Commande.objects.get(panier=panier, statut="Zombie")
-        commande_zombie.statut = "en cours"  
-        commande_zombie.save()
+        if commande_zombie:
+            commande_zombie.statut = "Reactivé"  
+            commande_zombie.save()
     except Commande.DoesNotExist:
-        pass  # Pas de commande zombie, on continue
+        
+        if panier:
+            # Crée commande SEULEMENT si le panier a des articles
+            commande, created = Commande.objects.get_or_create(
+                panier_id=panier.pk
+                )
+            commande.statut="Chargement"
+            commande.save()
+            
     
     #Verifie si le produit(article) est deja dansl e panier
     article , article_created = ArticlePanier.objects.get_or_create(
@@ -37,6 +48,7 @@ def ajouter_au_panier(request, products_id):
     )
     
     if not article_created:
+        
         #si l'article existe déjà, augmente la quantité
         article.quantite +=1
         article.save()
@@ -58,7 +70,7 @@ def voir_panier(request):
             commande, created = Commande.objects.get_or_create(
                 panier_id=panier.pk
             )
-            commande.statut="en cours"
+            commande.statut="Chargement"
             commande.save()
             
         articles = panier.articlepanier_set.all()
@@ -139,9 +151,10 @@ def valide_commande(request):
                 return redirect("order_app:voir-panier")
 
         #crée la commande 
-        commande = Commande.objects.create(panier_id=panier.pk)
-        commande.statut="validée"
-        commande.save()
+        if panier.articlepanier_set.exists():
+            commande = Commande.objects.get(panier_id=panier.pk)
+            commande.statut="validée"
+            commande.save()
                                            
         
         
@@ -173,6 +186,7 @@ def detail_commande(request, commande_id):
     # 3. Passe à ton template
     ctx = {
         "commande_detail": commande,
+        "commande_is_valide":commande.statut=="validée",
         "panier": commande.panier  # Le panier lié à cette commande
     }
     return render(request, "order_templates/detail_commande.html", ctx)

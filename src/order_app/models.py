@@ -35,15 +35,16 @@ class ArticlePanier(models.Model):
     
 class Commande(models.Model):
     STATUT_COMMANDE = [
-        ("en cours","en cours"),
+        ("Chargement","Chargement"),
         ("validée", "Validée"),
         ("payee", "Payée"),
         ("livraison", "En livraison"),
         ("terminée", "terminée"),
-         ("Zombie", "Zombie")
+         ("Zombie", "Zombie"),
+         ("Reactivé", "Reactivé")
     ]
     panier = models.ForeignKey(Panier, on_delete=models.CASCADE)
-    statut = models.CharField(max_length=20, choices=STATUT_COMMANDE, default="en cours")
+    statut = models.CharField(max_length=20, choices=STATUT_COMMANDE, default="Chargement")
     date_commande = models.DateTimeField(auto_now_add=True)
     paiements = models.OneToOneField("payement_app.Paiement",related_name="relat_paye", on_delete=models.SET_NULL, null=True, blank=True)
     

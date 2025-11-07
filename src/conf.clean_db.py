@@ -32,12 +32,3 @@ with connection.cursor() as cursor:
     cursor.execute("DELETE FROM sqlite_sequence WHERE name='order_app_articlepanier'")
 
 print("Séquences SQLite réinitialisées !")
-
-
-#🚀 POUR POSTGRESQL (si tu utilises) :
-from django.db import connection
-
-with connection.cursor() as cursor:
-    cursor.execute("ALTER SEQUENCE order_app_panier_id_seq RESTART WITH 1")
-    cursor.execute("ALTER SEQUENCE order_app_commande_id_seq RESTART WITH 1")
-    cursor.execute("ALTER SEQUENCE order_app_articlepanier_id_seq RESTART WITH 1")
