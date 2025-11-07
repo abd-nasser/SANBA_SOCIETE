@@ -1,0 +1,28 @@
+
+  
+
+
+<h1>📋 Détails de la Commande #{{ commande_detail.id }}</h1>
+
+<div class="commande-info">
+    <p><strong>Statut :</strong> {{ commande_detail.statut }}</p>
+    <p><strong>Date :</strong> {{ commande_detail.date_commande }}</p>
+    <p><strong>Panier lié :</strong> {{ commande_detail.panier.id }}</p>
+</div>
+
+<h2>Articles dans cette commande :</h2>
+<ul>
+{% for article in panier.articlepanier_set.all %}
+    <li>
+        {{ article.product.name }} - 
+        Quantité: {{ article.quantite }} - 
+        Sous-total: {{ article.sous_total }} €
+    </li>
+{% empty %}
+    <li>Aucun article dans cette commande</li>
+{% endfor %}
+</ul>
+
+<h3>Total de la commande : {{ panier.total_panier }} €</h3>
+
+<a href="{% url 'order_app:voir-panier' %}">← Retour au panier</a>

@@ -14,4 +14,4 @@ class Client(AbstractUser):
     
     def __str__(self):
         return f"{self.username}-({self.type_client})"
-
+    

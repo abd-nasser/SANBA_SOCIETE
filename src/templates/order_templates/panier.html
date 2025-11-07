@@ -1,3 +1,14 @@
+<!-- EN HAUT du template -->
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 <h1>panier: {{ panier.status }}</h1>
 <ul>
 {% for article  in articles  %}
@@ -12,5 +23,13 @@
 </ul>
 
 <h1>total : {{ total }}</h1>
+
+
+{% if commande %}
+    <a href="{% url 'order_app:detail-commande' commande.id %}">detail de la commande ></a>
+    <a href="{% url 'order_app:valide-commande' %}">Validé la Commande</a>
+{% else %}
+    <p>Ajoutez des articles pour créer une commande</p>
+{% endif %}
 
 

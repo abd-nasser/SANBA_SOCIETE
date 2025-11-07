@@ -9,7 +9,21 @@ class Panier(models.Model):
     def total_panier(self):
         return sum(article.sous_total() for article in self.articlepanier_set.all())
   
-
+    def __str__(self):
+        return self.client.username
+    
+     #Contrainte pour un seul panier à status actif pour le client ! 
+ #gère les erreur de suppression ou modif des article dans le panier , evite la confusion de panier
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["client","status"],
+                condition=models.Q(status="actif"),
+                name='un_seul_panier_actif_par_client'
+            )
+        ]
+        
+    
 class ArticlePanier(models.Model):
     Panier = models.ForeignKey(Panier, on_delete=models.CASCADE)
     product = models.ForeignKey(Products, on_delete=models.CASCADE)
@@ -21,13 +35,15 @@ class ArticlePanier(models.Model):
     
 class Commande(models.Model):
     STATUT_COMMANDE = [
+        ("en cours","en cours"),
         ("validée", "Validée"),
         ("payee", "Payée"),
         ("livraison", "En livraison"),
-        ("terminée", "terminée")
+        ("terminée", "terminée"),
+         ("Zombie", "Zombie")
     ]
     panier = models.ForeignKey(Panier, on_delete=models.CASCADE)
-    statut = models.CharField(max_length=20, choices=STATUT_COMMANDE, default="Validée")
+    statut = models.CharField(max_length=20, choices=STATUT_COMMANDE, default="en cours")
     date_commande = models.DateTimeField(auto_now_add=True)
     paiements = models.OneToOneField("payement_app.Paiement",related_name="relat_paye", on_delete=models.SET_NULL, null=True, blank=True)
     
