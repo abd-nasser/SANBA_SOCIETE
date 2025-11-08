@@ -198,4 +198,4 @@ def historique_commandes(request):
     """
     commandes = Commande.objects.filter(panier__client=request.user).order_by("-date_commande")
     ctx = {'historique_commande':commandes}
-    return render(request, "order_templates/historique-commande.html", ctx)
+    return render(request, "order_templates/historique_commande.html", ctx)

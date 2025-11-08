@@ -26,4 +26,4 @@ def choix_paiement(request, commande_id):
     return render(request, 'payement_templates/choix_paiement.html', ctx)
     
     
-    
+@login_required

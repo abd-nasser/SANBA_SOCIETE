@@ -1,0 +1,11 @@
+<h1>Historique des commandes</h1>
+
+{% for comande_story in   historique_commande  %}
+    <h3>Commande du: {{ comande_story.date_commande}}</h3>
+    <h3>Status: {{comande_story.statut}}</h3>
+    <h3>Satuts Payement: {{comande_story.paiements.statu }} </h3>
+    <h3>Total commande : {{ commde_story.Panier.total_panier }}</h3>
+    <hr>
+    <hr>
+{% endfor %}
+    

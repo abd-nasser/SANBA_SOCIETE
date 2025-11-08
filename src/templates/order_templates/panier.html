@@ -27,9 +27,13 @@
 
 {% if commande %}
     <a href="{% url 'order_app:detail-commande' commande.id %}">detail de la commande ></a>
+    <br>
     <a href="{% url 'order_app:valide-commande' %}">Validée commande</a>
+    <br>
 {% else %}
     <p>Ajoutez des articles pour créer une commande</p>
 {% endif %}
+
+<a href="{% url 'order_app:historique-commande' %}">Historique des commande </a>
 
 
