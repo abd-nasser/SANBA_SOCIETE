@@ -4,8 +4,8 @@ from order_app.models import Commande
 class Paiement(models.Model):
     # 1. Comment on paye ?
     METHOD = [
-        ("stripe", "Carte Bancaire"),
-        ("ligdicash", "Mobile Money"),
+        ("carte_ligdicash", "Carte Bancaire(ligdicash)"),
+        ("mobile_ligdicash", "Mobile Money (Ligdicash)"),
     ]
     
     # 2. Est ce que ça marché ?
@@ -17,7 +17,7 @@ class Paiement(models.Model):
     ]
     
     # 3. A quelle commande ce paiement est il lié ?
-    commande = models.ForeignKey(Commande, related_name="relat_cmd", on_delete=models.CASCADE)
+    commande = models.ForeignKey(Commande, related_name="paiement", on_delete=models.CASCADE)
     
     # 4. Avec quel moyen de paiement ?
     methode = models.CharField(max_length=20, choices=METHOD)
@@ -31,9 +31,8 @@ class Paiement(models.Model):
     # 7 Quand est-ce que le paiement à été crée ?
     date_creation = models.DateTimeField(auto_now_add=True)
     
-    # 8. est ce avec la carte bancaire (stripe)
-    stripe_payement_intent_id = models.CharField(max_length=100, blank=True)
-    
+
     # 9. est ce avec le telephone (ligdicash)
     ligdicash_transaction_id = models.CharField(max_length=100, blank=True)
     ligdicash_phone = models.CharField(max_length=20, blank=True)
+    ligdicash_payment_method = models.CharField(max_length=50, blank=True), #card ou mobile_money

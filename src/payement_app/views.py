@@ -4,6 +4,8 @@ from django.contrib import messages
 from .models import Paiement
 from order_app.models import Commande
 from django.conf import settings
+
+import requests
 import stripe
 
 
@@ -31,55 +33,75 @@ def choix_paiement(request, commande_id):
     return render(request, 'payement_templates/choix_paiement.html', ctx)
     
     
+
 @login_required
-def initier_sripe(request, commande_id):
+def initier_paiement_ligdicash(request, commande_id, type_paiement):
+    """PAIEMENT LIGDICASH UNIFIE (CARTE + MOBILE)
     """
-    LANCE LE PAIEMENT STRIPE (CARTES)
-    """
-    #"Trouvé la commande à payé"
     commande = get_object_or_404(Commande, id=commande_id, panier__client=request.user)
     
-    # convertit le prix en centimes
-    montant = int(commande.panier.total_panier()*100)
-    #Stripe veut 1000 pour 10,00(comme les centimes)
-    
-    try:
-        #Dit à stripe de préparer le paiement"
-        intent = stripe.PaymentIntent.create(
-            amount=montant,
-            currency='xof',
-            metadata={
-                'commande_id':commande.id,
-                'client_id':request.user.id
+    if request.method =='POST':
+        #configuration selon le type
+        if type_paiement=="mobile":
+            phone = request.POST.get('phone') #recupère phone du client
+            
+            #prépare les donnée du client pour post à API ligdicash
+            payload = {
+                "amount":str(commande.panier.total_panier()),
+                "currency":"XOF",
+                "order_id":str(commande.id),
+                "phone_number":phone,
+                "payement_method":'mobile_money',
+                'callback_url':f'{settings.BASE_URL}/payement/ligdicash/webhook/',
+                
             }
-        )
-         # 👆 Comme dire: "Hé Stripe, prépare-toi à recevoir un paiement!"
-         
-         # 🎯en meme temps on initialise les champs de model paiements dans db
-        paiement = Paiement.objects.create(
-            commande=commande,
-            methode="stripe",
-            montant=commande.panier.total_panier(),
-            statu="reussi",
-            stripe_payement_intent_id=intent.id,
-         )
+        else:
+            payload = {
+                "amount":str(commande.panier.total_panier()),
+                "currency":"XOF",
+                "order_id":str(commande.id),
+                "payement_method":'card',
+                "callback_url":f'{settings.BASE_URL}/payement/ligdicash/webhook/',
+                  
+            }
+            
+            headers = {
+                "Authorization":f"Bearer {settings.LIGDICASH_API_KEY}",
+                'Accept': 'application/json',
+                "Content-Type":'application/json'
+            }
+            
+            try:
+                api = ""
+                response = requests.post(url=api,
+                                         json=payload,
+                                         headers=headers)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    #on initialise le model paiement avec l'etat de la response
+                    paiement = Paiement.objects.create(
+                        commande=commande,
+                        methode ="ligdicash",
+                        statu = "reussi",
+                        montant=commande.panier.total_panier(),
+                        ligdicash_transaction_id= data.get('transaction_id'),
+                        ligdicash_phone=phone if type_paiement=="mobile" else'',
+                        ligdicash_payment_method = "mobile_money" if type_paiement=="mobile" else "card"
+                    )
+                    
+                    #lier paiement à la commande
+                    commande.paiements = paiement
+                    commande.save()
+                    
+                    messages.success(request, f"Paiement {type_paiement} initié !")
+                    return redirect('order_app:detail-commande', commande_id=commande.id)
+            except requests.RequestException as e:
+                messages.error(request,f"Erreur: {str(e)}" )
         
-        # initialise le champs paiement dans le model Commande 
-        commande.paiements=paiement
-        commande.save()
-        
-        #préparer l'ecran de paiement
         ctx = {
-            "commande":commande,
-            "client_secret":intent.client_secret, #clé secrète pour Stripe
-            #"stripe_public_key":settings.STRIPE_PUBLIC_KEY #clé publique
-        }
-        # 🎯 Ligne 7: "Montre l'écran où on tape la carte"
-        return render(request, 'payement_templates/paiement_stripe.html', ctx)
-    
-    except stripe.StripeError as e:
-         # 🎯 Ligne 8: "Si erreur, affiche un message"
-         messages.error(request,f'Erreur Stripe:{str(e)}')
-         return redirect('payement_app:choix_paiement', commande_id=commande.id)
-      # 👆 Comme dire: "Le terminal ne marche pas, retourne au menu"
-    
+            'commande': commande,
+            'type_paiement': type_paiement
+            }
+    return render(request, f'payment_templates/paiement_ligdicash_{type_paiement}.html', ctx)
