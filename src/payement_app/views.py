@@ -55,6 +55,7 @@ def initier_paiement_ligdicash(request, commande_id, type_paiement):
                 'callback_url':f'{settings.BASE_URL}/payement/ligdicash/webhook/',
                 
             }
+            methode_model = "mobile_ligdicash"
         else:
             payload = {
                 "amount":str(commande.panier.total_panier()),
@@ -64,6 +65,7 @@ def initier_paiement_ligdicash(request, commande_id, type_paiement):
                 "callback_url":f'{settings.BASE_URL}/payement/ligdicash/webhook/',
                   
             }
+            methode_model = "card"
             
             headers = {
                 "Authorization":f"Bearer {settings.LIGDICASH_API_KEY}",
@@ -75,7 +77,8 @@ def initier_paiement_ligdicash(request, commande_id, type_paiement):
                 api = ""
                 response = requests.post(url=api,
                                          json=payload,
-                                         headers=headers)
+                                         headers=headers,
+                                         timeout=30)
                 
                 if response.status_code == 200:
                     data = response.json()
@@ -84,24 +87,28 @@ def initier_paiement_ligdicash(request, commande_id, type_paiement):
                     paiement = Paiement.objects.create(
                         commande=commande,
                         methode ="ligdicash",
-                        statu = "reussi",
                         montant=commande.panier.total_panier(),
                         ligdicash_transaction_id= data.get('transaction_id'),
                         ligdicash_phone=phone if type_paiement=="mobile" else'',
-                        ligdicash_payment_method = "mobile_money" if type_paiement=="mobile" else "card"
+                        ligdicash_payment_method = payload["payement_method"]
                     )
                     
                     #lier paiement à la commande
                     commande.paiements = paiement
                     commande.save()
                     
-                    messages.success(request, f"Paiement {type_paiement} initié !")
-                    return redirect('order_app:detail-commande', commande_id=commande.id)
+                    if data.get("payement_url"):
+                        return redirect(data["payement_url"])
+                    else:
+                    
+                        messages.success(request, f"Paiement {type_paiement} initié !") # Redirection vers Ligdicash
+                        return redirect('order_app:detail-commande', commande_id=commande.id)
+                    
             except requests.RequestException as e:
-                messages.error(request,f"Erreur: {str(e)}" )
+              messages.error(request,f"Erreur: {str(e)}" )
         
         ctx = {
             'commande': commande,
             'type_paiement': type_paiement
             }
-    return render(request, f'payment_templates/paiement_ligdicash_{type_paiement}.html', ctx)
+    return render(request, f'payement_templates/paiement_ligdicash_{type_paiement}.html', ctx)

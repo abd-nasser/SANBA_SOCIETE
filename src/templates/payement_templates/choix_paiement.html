@@ -2,6 +2,6 @@
 <h3>Commande #ID : {{ commande.id }}</h3>
 <h3>Prix total de la commande : {{ total }}</h3>
 
-<a href="{% url 'payement_app:paiement-stripe' commande.id %}">Payer par Carte bancaire</a>
+<a href="{% url 'payement_app:paiement-ligdicash' commande.id mobile %}">Payer par Mobile Money</a>
 
-<a href="#">Payer par mobile Money</a>
+<a href="{% url 'payement_app:paiement-ligdicash' commande.id card %}">Payer par Carte Bancaire </a>
