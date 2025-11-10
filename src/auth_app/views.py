@@ -14,7 +14,7 @@ def register_view(request):
             login(request, user)
             email = form.cleaned_data.get("email")
             send_mail_with_body_html(
-                subject="Inscription Reussi",
+                subject="🎉 Bienvenue chez Sanba Société Métallurgie !",
                 recipient_list=[email],
                 template="mail.html",
                 context={"username":form.cleaned_data.get("username")}
