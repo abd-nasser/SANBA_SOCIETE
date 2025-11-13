@@ -6,6 +6,7 @@ from.models import Panier, ArticlePanier, Commande
 from .form import AticlePanierForm
 from django.db.models import Q, F
 
+
 @login_required
 def ajouter_au_panier(request, products_id):
     """

@@ -23,7 +23,9 @@ class Services(models.Model):
     def __str__(self):
         return self.name
     
+    
 class Realisation(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True)
     image = models.ImageField(upload_to="realisation_image/", blank=True, null=True)
     date = models.DateField(null=True)
     localisation = models.CharField(max_length=150)
@@ -33,6 +35,6 @@ class Commentaire(models.Model):
     clients = models.ForeignKey(Client, 
                                 on_delete=models.PROTECT)
     realisation = models.ForeignKey(Realisation, on_delete=models.CASCADE)
-    comment = models.TextField(null=True, blank=True)
+    commentaire = models.TextField(null=True, blank=True)
     date_time = models.DateTimeField(auto_now_add=True)
     
